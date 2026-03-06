@@ -30,28 +30,14 @@ bot.catch((err) => {
   console.error(`[${new Date().toISOString()}] Bot error:`, err);
 });
 
-const WEBHOOK_URL = process.env.WEBHOOK_URL; // e.g. https://your-domain.com
+const WEBHOOK_URL = process.env.WEBHOOK_URL;
 const PORT = parseInt(process.env.PORT ?? "3000");
 
 if (WEBHOOK_URL) {
-  // Production: webhook mode
-  const app = Fastify({ logger: false });
+  const app = Fastify();
 
   app.get("/health", async () => "ok");
-
-  const handleUpdate = webhookCallback(bot, "std/http");
-
-  app.post("/bot", async (request, reply) => {
-    const res = await handleUpdate(
-      new Request(`http://localhost/bot`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(request.body),
-      }),
-    );
-    reply.status(res.status);
-    return res.text();
-  });
+  app.post("/bot", webhookCallback(bot, "fastify"));
 
   await app.listen({ port: PORT, host: "0.0.0.0" });
   console.log(`[${new Date().toISOString()}] Listening on :${PORT}`);
@@ -60,10 +46,9 @@ if (WEBHOOK_URL) {
     await bot.api.setWebhook(WEBHOOK_URL + "/bot");
     console.log(`[${new Date().toISOString()}] Webhook registered`);
   } catch (err) {
-    console.error(`[${new Date().toISOString()}] Webhook registration failed (will retry on next deploy):`, err);
+    console.error(`[${new Date().toISOString()}] Webhook registration failed:`, err);
   }
 } else {
-  // Dev: polling mode
   bot.start();
   console.log(`[${new Date().toISOString()}] Bot started (polling)`);
 }
