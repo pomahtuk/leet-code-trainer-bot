@@ -1,0 +1,60 @@
+id: reverse-bits
+leetcode_id: 190
+title: Reverse Bits
+difficulty: easy
+companies:
+  - accenture
+  - airbnb
+  - amazon
+  - apple
+  - bloomberg
+  - google
+  - meta
+  - microsoft
+  - nvidia
+  - qualcomm
+topics:
+  - divide-and-conquer
+  - bit-manipulation
+statement: >
+  Reverse bits of a given 32 bits signed integer. Example: Input 43261596 (00000010100101000001111010011100) becomes
+  964176192 (00111001011110000010100101000000). Constraints: 0 <= n <= 2^31 - 2.
+quiz:
+  - question: Which bitwise strategy correctly reverses the bits of a 32-bit integer?
+    options:
+      - Iterate 32 times, shifting the result left and ORing it with the input's last bit.
+      - XOR the integer with a mask of all ones (0xFFFFFFFF).
+      - Use the bitwise NOT operator and then shift left by one.
+      - Convert the integer to a string, reverse it, and parse it back.
+    correct: 0
+    hint: Think about building the new number bit-by-bit from right to left.
+  - question: If this function is called millions of times, what is the most effective optimization?
+    options:
+      - Split the 32-bit integer into 8-bit chunks and use a precomputed lookup table.
+      - Use a recursive divide-and-conquer approach for every single call.
+      - Convert the integer to a binary string and cache the string result.
+      - Store every possible 32-bit integer result in a HashMap.
+    correct: 0
+    hint: A 32-bit integer can be viewed as four 8-bit segments. How many entries would an 8-bit table need?
+solution:
+  explanation: >
+    The algorithm iterates 32 times to process every bit. In each iteration, we shift the result left to make space,
+    extract the least significant bit of 'n' using a mask (n & 1), add it to the result using bitwise OR, and then
+    right-shift 'n' to process the next bit.
+  pseudocode: |
+    res = 0
+    for i from 0 to 31:
+      res = (res << 1) | (n & 1)
+      n = n >> 1
+    return res
+  java: |
+    public int reverseBits(int n) {
+        int res = 0;
+        for (int i = 0; i < 32; i++) {
+            res = (res << 1) | (n & 1);
+            n >>= 1;
+        }
+        return res;
+    }
+_flag_reason: Incorrect problem statement (signed vs unsigned integer), non-standard constraint, Java solution uses
+  arithmetic shift instead of logical shift

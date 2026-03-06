@@ -1,4 +1,4 @@
-import { InlineKeyboard, type Context } from "grammy";
+import { type Context } from "grammy";
 import {
   getOrCreateUser,
   getUserSettings,
@@ -8,8 +8,7 @@ import {
   deleteSession,
 } from "../../db/queries.js";
 import {
-  loadAllProblems,
-  filterProblems,
+  loadFilteredProblems,
   getRandomProblem,
   getProblemById,
 } from "../../problems/loader.js";
@@ -22,7 +21,7 @@ export async function problemCommand(ctx: Context) {
   // Check for existing session
   const existing = await getSession(telegramId);
   if (existing) {
-    const problem = getProblemById(existing.problem_id);
+    const problem = await getProblemById(existing.problem_id);
     if (problem) {
       await ctx.reply(
         `You have an active problem: *${problem.title}*\nUse /skip to get a new one, or answer the current question.`,
@@ -39,8 +38,7 @@ export async function problemCommand(ctx: Context) {
     ? await getSolvedProblemIds(telegramId)
     : [];
 
-  const all = loadAllProblems();
-  const filtered = filterProblems(all, settings, solvedIds);
+  const filtered = await loadFilteredProblems(settings, solvedIds);
   const problem = getRandomProblem(filtered);
 
   if (!problem) {

@@ -1,0 +1,63 @@
+id: min-moves-equal-array
+leetcode_id: 453
+title: Minimum Moves to Equal Array Elements
+difficulty: medium
+companies:
+  - amazon
+  - coursera
+  - google
+  - ibm
+  - indeed
+  - jpmorgan
+  - meta
+  - microsoft
+topics:
+  - array
+  - math
+statement: >
+  Given an integer array nums of size n, return the minimum number of moves required to make all array elements equal.
+  In one move, you can increment n - 1 elements of the array by 1.
+
+  Example 1: Input: nums = [1,2,3] Output: 3
+
+  Example 2: Input: nums = [1,1,1] Output: 0
+
+  Constraints: n == nums.length, 1 <= nums.length <= 10^5, -10^9 <= nums[i] <= 10^9. The answer is guaranteed to fit in
+  a 32-bit integer.
+quiz:
+  - question: Which mathematical observation simplifies this problem from incrementing elements to a single operation?
+    options:
+      - Incrementing n - 1 elements is equivalent to decrementing 1 element relative to the others.
+      - The target value for all elements is the median of the array.
+      - The target value for all elements is the mean of the array.
+      - The total moves required is always the difference between the max and min elements.
+    correct: 0
+    hint: Think about how the relative differences between elements change if you increment all but one.
+  - question: What is the time and space complexity of the optimal solution?
+    options:
+      - O(n) time and O(1) space
+      - O(n log n) time and O(1) space
+      - O(n) time and O(n) space
+      - O(n^2) time and O(1) space
+    correct: 0
+    hint: You only need to find the minimum value and then calculate the sum of differences.
+solution:
+  explanation: >
+    Incrementing n-1 elements by 1 is equivalent to decrementing 1 element by 1 in terms of reaching equality.  To
+    minimize moves, we reduce all elements to the smallest value currently in the array.  The total moves is the sum of
+    (nums[i] - min(nums)) for all i.
+  pseudocode: |
+    min_val = min(nums)
+    moves = 0
+    for x in nums:
+        moves += (x - min_val)
+    return moves
+  java: |
+    public int minMoves(int[] nums) {
+        int min = nums[0];
+        for (int n : nums) min = Math.min(min, n);
+        int res = 0;
+        for (int n : nums) res += n - min;
+        return res;
+    }
+_flag_reason: difficulty is medium but should be easy

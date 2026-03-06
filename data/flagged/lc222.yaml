@@ -1,0 +1,60 @@
+id: count-complete-tree-nodes
+leetcode_id: 222
+title: Count Complete Tree Nodes
+difficulty: easy
+companies:
+  - adobe
+  - amazon
+  - bloomberg
+  - flipkart
+  - google
+  - meta
+  - microsoft
+topics:
+  - binary-search
+  - bit-manipulation
+  - tree
+  - binary-tree
+statement: >
+  Given the root of a complete binary tree, return the number of the nodes in the tree. According to Wikipedia, every
+  level, except possibly the last, is completely filled in a complete binary tree, and all nodes in the last level are
+  as far left as possible. It can have between 1 and 2^h nodes inclusive at the last level h. Design an algorithm that
+  runs in less than O(n) time complexity.
+quiz:
+  - question: Which property allows this problem to be solved in O(log² n) time?
+    options:
+      - If the left-most height equals the right-most height, the subtree is perfect.
+      - Complete trees are always balanced, so we can skip half the nodes.
+      - The total number of nodes is always a power of two minus one.
+      - We can use bit manipulation to find the exact index of the last node.
+    correct: 0
+    hint: A perfect binary tree with height h has exactly 2^h - 1 nodes.
+  - question: What is the time complexity of the optimized recursive approach that compares heights?
+    options:
+      - O(log² n)
+      - O(n)
+      - O(log n)
+      - O(n log n)
+    correct: 0
+    hint: We compute the height O(log n) times, and each height calculation takes O(log n).
+solution:
+  explanation: >
+    The algorithm compares the height of the leftmost path and the rightmost path. If they are equal, the tree is
+    'perfect' and the node count is 2^height - 1; otherwise, it recursively sums the nodes of the subtrees.
+  pseudocode: |
+    function countNodes(root):
+      if root is null: return 0
+      hL = getLeftHeight(root)
+      hR = getRightHeight(root)
+      if hL == hR: return (2^hL) - 1
+      return 1 + countNodes(root.left) + countNodes(root.right)
+  java: |
+    public int countNodes(TreeNode root) {
+        int hL = 0, hR = 0;
+        TreeNode l = root, r = root;
+        while (l != null) { hL++; l = l.left; }
+        while (r != null) { hR++; r = r.right; }
+        if (hL == hR) return (1 << hL) - 1;
+        return 1 + countNodes(root.left) + countNodes(root.right);
+    }
+_flag_reason: difficulty is easy, should be medium

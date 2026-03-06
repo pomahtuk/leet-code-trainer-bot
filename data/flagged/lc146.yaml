@@ -1,0 +1,190 @@
+id: lru-cache-design
+leetcode_id: 146
+title: LRU Cache
+difficulty: medium
+companies:
+  - adobe
+  - amazon
+  - amd
+  - appfolio
+  - apple
+  - arista-networks
+  - atlassian
+  - aurora
+  - autodesk
+  - bitgo
+  - bloomberg
+  - bookingcom
+  - broadcom
+  - bytedance
+  - capital-one
+  - chewy
+  - cisco
+  - citadel
+  - citrix
+  - cloudflare
+  - confluent
+  - couchbase
+  - coupang
+  - de-shaw
+  - disney
+  - docusign
+  - doordash
+  - ebay
+  - equinix
+  - expedia
+  - fiverr
+  - ford
+  - freecharge
+  - freshworks
+  - gartner
+  - general-motors
+  - glovo
+  - goldman-sachs
+  - google
+  - grab
+  - groww
+  - grubhub
+  - ibm
+  - intel
+  - intuit
+  - jane-street
+  - jpmorgan
+  - juspay
+  - kla
+  - line
+  - linkedin
+  - marqeta
+  - medianet
+  - meta
+  - microsoft
+  - mobileye
+  - moloco
+  - mongodb
+  - morgan-stanley
+  - myntra
+  - navan
+  - netapp
+  - netflix
+  - netskope
+  - niantic
+  - nokia
+  - nordstrom
+  - nutanix
+  - nvidia
+  - okta
+  - optiver
+  - oracle
+  - palantir-technologies
+  - palo-alto-networks
+  - paypal
+  - phonepe
+  - qualcomm
+  - rakuten
+  - razorpay
+  - reddit
+  - ripple
+  - rippling
+  - rivian
+  - roku
+  - rubrik
+  - salesforce
+  - samsung
+  - sap
+  - servicenow
+  - shopee
+  - shopify
+  - siemens
+  - smartnews
+  - snapchat
+  - snowflake
+  - sofi
+  - spinny
+  - splunk
+  - sprinklr
+  - squarepoint-capital
+  - squarespace
+  - stackadapt
+  - swiggy
+  - tcs
+  - tencent
+  - tesla
+  - thousandeyes
+  - tiktok
+  - tripadvisor
+  - turo
+  - twitch
+  - twitter
+  - uber
+  - ukg
+  - verkada
+  - viasat
+  - vimeo
+  - visa
+  - vmware
+  - walmart-labs
+  - wells-fargo
+  - whatfix
+  - yahoo
+  - yandex
+  - zenefits
+  - zocdoc
+  - zoho
+  - zscaler
+topics:
+  - hash-table
+  - linked-list
+  - design
+  - doubly-linked-list
+statement: >
+  Implement the LRUCache class with O(1) time complexity for get and put: - LRUCache(capacity): Initialize with size
+  capacity. - get(key): Return value if key exists, else -1. - put(key, value): Update value if key exists; otherwise
+  add key-value pair. If capacity is exceeded, evict the least recently used key.
+quiz:
+  - question: Which combination of data structures is required to achieve O(1) for both get and put operations?
+    options:
+      - HashMap and Doubly Linked List
+      - HashMap and Singly Linked List
+      - TreeMap and Stack
+      - Priority Queue and Array
+    correct: 0
+    hint: You need O(1) lookup and O(1) ability to move a middle element to the front.
+  - question: Why is a Doubly Linked List preferred over a Singly Linked List for the LRU implementation?
+    options:
+      - It allows removing a node in O(1) given only a reference to that node.
+      - It uses less memory than a Singly Linked List.
+      - It allows for binary search over the cached keys.
+      - It is required for the HashMap to function correctly.
+    correct: 0
+    hint: To remove a node, you need to link its previous node to its next node.
+solution:
+  explanation: >
+    A HashMap provides O(1) access to nodes, while a Doubly Linked List maintains the order of usage.  When an item is
+    accessed or added, it is moved to the head; the tail always represents the least recently used item.
+  pseudocode: |
+    get(key):
+      if key exists: move node to head; return node.val
+      return -1
+    put(key, val):
+      if key exists: update value; move node to head
+      else:
+        if size == capacity: remove tail and delete from map
+        add new node to head and map
+  java: |
+    class Node { int k, v; Node prev, next; Node(int k, int v) {this.k=k; this.v=v;} }
+    Map<Integer, Node> map = new HashMap<>();
+    Node head = new Node(0,0), tail = new Node(0,0);
+    int cap;
+    void remove(Node n) { n.prev.next = n.next; n.next.prev = n.prev; }
+    void insert(Node n) { n.next = head.next; n.next.prev = n; n.prev = head; head.next = n; }
+    public int get(int key) {
+        if (!map.containsKey(key)) return -1;
+        Node n = map.get(key); remove(n); insert(n);
+        return n.v;
+    }
+    public void put(int key, int value) {
+        if (map.containsKey(key)) remove(map.get(key));
+        if (map.size() == cap && !map.containsKey(key)) { map.remove(tail.prev.k); remove(tail.prev); }
+        Node n = new Node(key, value); insert(n); map.put(key, n);
+    }
+_flag_reason: java code is incomplete, missing class definition and constructor

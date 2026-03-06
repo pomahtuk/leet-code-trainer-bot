@@ -1,0 +1,58 @@
+id: lowest-common-ancestor-bst
+leetcode_id: 235
+title: Lowest Common Ancestor of a Binary Search Tree
+difficulty: medium
+companies:
+  - amazon
+  - apple
+  - bloomberg
+  - google
+  - meta
+  - microsoft
+  - twitter
+topics:
+  - tree
+  - depth-first-search
+  - binary-search-tree
+  - binary-tree
+statement: >
+  Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes p and q. LCA is
+  defined as the lowest node in T that has both p and q as descendants (a node can be a descendant of itself). Example:
+  root = [6,2,8,0,4,7,9], p = 2, q = 8 -> Output: 6. Constraints: All Node.val are unique; p and q exist in the BST; p
+  != q.
+quiz:
+  - question: Which property of a BST is most critical for finding the LCA in O(H) time?
+    options:
+      - "The value relationship: left < root < right allows directional steering."
+      - The property that an in-order traversal results in a sorted list.
+      - The fact that the root is always the median of the tree.
+      - The property that all leaf nodes are at the same depth.
+    correct: 0
+    hint: If both p and q are smaller than the root, where must the LCA be?
+  - question: What is the space complexity of the iterative search for LCA in a BST?
+    options:
+      - O(N) where N is the number of nodes.
+      - O(H) where H is the height of the tree.
+      - O(1) because we only use a pointer to traverse.
+      - O(log N) due to the implicit stack usage.
+    correct: 2
+    hint: Does the iterative approach require a stack or recursion?
+solution:
+  explanation: >
+    Leverage the BST property: if both p and q are smaller than the current node, move left. If both are larger, move
+    right. If they are on opposite sides or one equals the current node, that node is the LCA.
+  pseudocode: |
+    while current is not null:
+      if p.val < current.val and q.val < current.val: current = current.left
+      else if p.val > current.val and q.val > current.val: current = current.right
+      else: return current
+  java: |
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        while (root != null) {
+            if (p.val < root.val && q.val < root.val) root = root.left;
+            else if (p.val > root.val && q.val > root.val) root = root.right;
+            else return root;
+        }
+        return null;
+    }
+_flag_reason: Difficulty is medium but LeetCode lists it as easy

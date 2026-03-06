@@ -1,0 +1,79 @@
+id: 26
+leetcode_id: 26
+title: Remove Duplicates from Sorted Array
+difficulty: easy
+companies:
+  - accenture
+  - adobe
+  - amazon
+  - apple
+  - bloomberg
+  - capgemini
+  - cisco
+  - cognizant
+  - deloitte
+  - epam-systems
+  - google
+  - ibm
+  - infosys
+  - meta
+  - microsoft
+  - morgan-stanley
+  - myntra
+  - nagarro
+  - oracle
+  - qualcomm
+  - sap
+  - siemens
+  - tcs
+  - uber
+  - udemy
+  - walmart-labs
+  - yandex
+  - zoho
+topics:
+  - array
+  - two-pointers
+statement: >
+  Given an integer array nums sorted in non-decreasing order, remove the duplicates in-place such that each unique
+  element appears only once. The relative order of the elements should be kept the same. Consider the number of unique
+  elements in nums to be k. After removing duplicates, return the number of unique elements k.
+quiz:
+  - question: Which algorithm pattern is most efficient for this in-place modification problem?
+    options:
+      - Two-pointers
+      - Sliding window
+      - Binary search
+      - Divide and conquer
+    correct: 0
+    hint: Think about maintaining one pointer for the current unique element and another for scanning the array.
+  - question: What are the time and space complexities of the optimal solution?
+    options:
+      - O(n) time, O(n) space
+      - O(n log n) time, O(1) space
+      - O(n) time, O(1) space
+      - O(n^2) time, O(1) space
+    correct: 2
+    hint: We only need to iterate through the array once and modify it in-place without extra data structures.
+solution:
+  explanation: >
+    Use a slow-pointer `i` to keep track of the position of the last unique element found. Iterate with a fast-pointer
+    `j`, updating `nums[i+1]` whenever `nums[j]` differs from `nums[i]`.
+  pseudocode: |
+    i = 0
+    for j from 1 to length-1:
+      if nums[j] != nums[i]:
+        i++
+        nums[i] = nums[j]
+    return i + 1
+  java: |
+    public int removeDuplicates(int[] nums) {
+        int i = 0;
+        for (int j = 1; j < nums.length; j++) {
+            if (nums[j] != nums[i]) {
+                nums[++i] = nums[j];
+            }
+        }
+        return i + 1;
+    }
+_flag_reason: code is incorrect for empty array edge case

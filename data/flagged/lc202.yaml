@@ -1,0 +1,93 @@
+id: happy-number
+leetcode_id: 202
+title: Happy Number
+difficulty: easy
+companies:
+  - accenture
+  - adobe
+  - agoda
+  - airbnb
+  - amazon
+  - apple
+  - blackrock
+  - bloomberg
+  - cisco
+  - cognizant
+  - google
+  - intel
+  - jpmorgan
+  - jump-trading
+  - meta
+  - microsoft
+  - nference
+  - nike
+  - oracle
+  - paypal
+  - snowflake
+  - swiggy
+  - tcs
+  - tesla
+  - tiktok
+  - twitter
+  - uber
+  - verily
+  - visa
+  - yahoo
+  - zoho
+topics:
+  - hash-table
+  - math
+  - two-pointers
+statement: >
+  Write an algorithm to determine if a number n is happy. A happy number is defined by replacing the number by the sum
+  of the squares of its digits repeatedly until it equals 1 or loops in a cycle. Return true if it ends in 1.
+quiz:
+  - question: Which strategy allows detecting the cycle in this process using O(1) space?
+    options:
+      - Floyd's Tortoise and Hare (Two Pointers)
+      - Greedy digit selection
+      - Recursive Depth First Search
+      - Binary Search on the digit range
+    correct: 0
+    hint: This pattern is identical to detecting a loop in a Linked List.
+  - question: What is the space complexity if you use a Hash Set to track seen numbers?
+    options:
+      - O(1)
+      - O(log n)
+      - O(n)
+      - O(n^2)
+    correct: 1
+    hint: The sum of squares of digits for a number n is bounded by its number of digits.
+solution:
+  explanation: >
+    Use a Hash Set to store results of the sum-of-squares operation. If the sum reaches 1, the number is happy; if the
+    sum repeats a value already in the set, a cycle is detected and the number is not happy.
+  pseudocode: |
+    seen = empty set
+    while n != 1 and n not in seen:
+      seen.add(n)
+      n = getNext(n)
+    return n == 1
+
+    function getNext(num):
+      total = 0
+      while num > 0:
+        digit = num % 10
+        total += digit * digit
+        num /= 10
+      return total
+  java: |
+    public boolean isHappy(int n) {
+        Set<Integer> seen = new HashSet<>();
+        while (n != 1 && seen.add(n)) {
+            int sum = 0;
+            while (n > 0) {
+                int d = n % 10;
+                sum += d * d;
+                n /= 10;
+            }
+            n = sum;
+        }
+        return n == 1;
+    }
+_flag_reason: Quiz question 2 has incorrect answer, space complexity is O(1) not O(log n)

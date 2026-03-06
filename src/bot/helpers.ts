@@ -9,13 +9,20 @@ export async function sendQuizQuestion(
   quizIndex: number,
 ) {
   const q = problem.quiz[quizIndex];
-  const keyboard = new InlineKeyboard();
 
-  q.options.forEach((opt, i) => {
-    keyboard.text(`${NUM_EMOJI[i]} ${opt}`, `ans:${problem.id}:${quizIndex}:${i}`).row();
+  // Full options in message text, buttons are just numbers
+  const optionsText = q.options
+    .map((opt, i) => `${NUM_EMOJI[i]} ${opt}`)
+    .join("\n");
+
+  const keyboard = new InlineKeyboard();
+  q.options.forEach((_, i) => {
+    keyboard.text(NUM_EMOJI[i], `ans:${problem.id}:${quizIndex}:${i}`);
   });
 
-  await ctx.reply(`❓ ${q.question}`, { reply_markup: keyboard });
+  await ctx.reply(`❓ ${q.question}\n\n${optionsText}`, {
+    reply_markup: keyboard,
+  });
 }
 
 export async function sendSolution(ctx: Context, problem: Problem) {

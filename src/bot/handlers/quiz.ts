@@ -28,7 +28,7 @@ export function registerCallbacks(bot: Bot<Context>) {
       return;
     }
 
-    const problem = getProblemById(problemId);
+    const problem = await getProblemById(problemId);
     if (!problem) {
       await ctx.answerCallbackQuery("Problem not found.");
       return;

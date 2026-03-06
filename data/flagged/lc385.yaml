@@ -1,0 +1,66 @@
+id: mini-parser
+leetcode_id: 385
+title: Mini Parser
+difficulty: medium
+companies:
+  - airbnb
+  - amazon
+  - bloomberg
+  - meta
+topics:
+  - string
+  - stack
+  - depth-first-search
+statement: >
+  Given a string s represents the serialization of a nested list, implement a parser to deserialize it and return the
+  deserialized NestedInteger. Each element is either an integer or a list whose elements may also be integers or other
+  lists.
+quiz:
+  - question: Which approach is most efficient for handling the nested structure of the input string?
+    options:
+      - Using a Stack to track the current NestedInteger level
+      - A two-pointer approach to find commas
+      - Converting the string to a long integer first
+      - Using a Breadth-First Search (BFS) with a Queue
+    correct: 0
+    hint: Think about how nested brackets resemble a Last-In-First-Out (LIFO) structure.
+  - question: What is the time complexity of a single-pass stack-based solution?
+    options:
+      - O(N), where N is the length of the string
+      - O(N log N), due to substring operations
+      - O(D), where D is the maximum depth of nesting
+      - O(N^2), because of nested list additions
+    correct: 0
+    hint: Each character in the string is visited exactly once during the parsing process.
+solution:
+  explanation: >
+    Use a stack to maintain the hierarchy. When '[' is encountered, push a new list. When a number is parsed, add it to
+    the top list on the stack. When ']' is encountered, pop the current list and add it to the previous one.
+  pseudocode: |
+    if s is integer: return NestedInteger(int(s))
+    stack = empty stack
+    for char, i in s:
+      if '[': push new NestedInteger()
+      else if digit or '-': parse full number, add to stack.peek()
+      else if ']': 
+        if stack.size > 1:
+          top = stack.pop(), stack.peek().add(top)
+    return stack.pop()
+  java: |
+    public NestedInteger deserialize(String s) {
+        if (!s.startsWith("[")) return new NestedInteger(Integer.parseInt(s));
+        Stack<NestedInteger> stack = new Stack<>();
+        int start = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '[') stack.push(new NestedInteger());
+            else if (c == ']' && stack.size() > 1) stack.peek().add(stack.pop());
+            else if (c == '-' || Character.isDigit(c)) {
+                if (i == 0 || (!Character.isDigit(s.charAt(i-1)) && s.charAt(i-1) != '-')) start = i;
+                if (i + 1 == s.length() || !Character.isDigit(s.charAt(i+1)))
+                    stack.peek().add(new NestedInteger(Integer.parseInt(s.substring(start, i + 1))));
+            }
+        }
+        return stack.pop();
+    }
+_flag_reason: incorrect Java code, inconsistent pseudocode

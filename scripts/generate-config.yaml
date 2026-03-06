@@ -1,5 +1,5 @@
 generator:
-  model: "gemini-3.1-flash-lite-preview"
+  model: "gemini-3-flash-preview"
   provider: "google"
   temperature: 0.7
 
@@ -13,5 +13,4 @@ regenerate:
   max_retries: 2
 
 output:
-  problems_dir: "data/problems"
   flagged_dir: "data/flagged"
