@@ -1,5 +1,6 @@
 import "dotenv/config";
-import { Bot } from "grammy";
+import { Bot, webhookCallback } from "grammy";
+import express from "express";
 import { registerCommands } from "./commands/index.js";
 import { registerCallbacks } from "./handlers/quiz.js";
 
@@ -29,5 +30,26 @@ bot.catch((err) => {
   console.error(`[${new Date().toISOString()}] Bot error:`, err);
 });
 
-bot.start();
-console.log(`[${new Date().toISOString()}] Bot started`);
+const WEBHOOK_URL = process.env.WEBHOOK_URL; // e.g. https://your-domain.com/bot
+const PORT = parseInt(process.env.PORT ?? "3000");
+
+if (WEBHOOK_URL) {
+  // Production: webhook mode
+  const app = express();
+
+  app.get("/health", (_req, res) => {
+    res.send("ok");
+  });
+
+  app.use(express.json());
+  app.post("/bot", webhookCallback(bot, "express"));
+
+  app.listen(PORT, async () => {
+    await bot.api.setWebhook(WEBHOOK_URL + "/bot");
+    console.log(`[${new Date().toISOString()}] Bot started (webhook on :${PORT})`);
+  });
+} else {
+  // Dev: polling mode
+  bot.start();
+  console.log(`[${new Date().toISOString()}] Bot started (polling)`);
+}
