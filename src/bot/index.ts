@@ -53,13 +53,14 @@ if (WEBHOOK_URL) {
     return res.text();
   });
 
+  await app.listen({ port: PORT, host: "0.0.0.0" });
+  console.log(`[${new Date().toISOString()}] Listening on :${PORT}`);
+
   try {
-    await app.listen({ port: PORT, host: "0.0.0.0" });
     await bot.api.setWebhook(WEBHOOK_URL + "/bot");
-    console.log(`[${new Date().toISOString()}] Bot started (webhook on :${PORT})`);
+    console.log(`[${new Date().toISOString()}] Webhook registered`);
   } catch (err) {
-    console.error("Failed to start:", err);
-    process.exit(1);
+    console.error(`[${new Date().toISOString()}] Webhook registration failed (will retry on next deploy):`, err);
   }
 } else {
   // Dev: polling mode
