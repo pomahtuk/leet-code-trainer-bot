@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { Bot, webhookCallback } from "grammy";
-import express from "express";
+import Fastify from "fastify";
 import { registerCommands } from "./commands/index.js";
 import { registerCallbacks } from "./handlers/quiz.js";
 
@@ -30,21 +30,34 @@ bot.catch((err) => {
   console.error(`[${new Date().toISOString()}] Bot error:`, err);
 });
 
-const WEBHOOK_URL = process.env.WEBHOOK_URL; // e.g. https://your-domain.com/bot
+const WEBHOOK_URL = process.env.WEBHOOK_URL; // e.g. https://your-domain.com
 const PORT = parseInt(process.env.PORT ?? "3000");
 
 if (WEBHOOK_URL) {
   // Production: webhook mode
-  const app = express();
+  const app = Fastify({ logger: false });
 
-  app.get("/health", (_req, res) => {
-    res.send("ok");
+  app.get("/health", async () => "ok");
+
+  const handleUpdate = webhookCallback(bot, "std/http");
+
+  app.post("/bot", async (request, reply) => {
+    const res = await handleUpdate(
+      new Request(`http://localhost/bot`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(request.body),
+      }),
+    );
+    reply.status(res.status);
+    return res.text();
   });
 
-  app.use(express.json());
-  app.post("/bot", webhookCallback(bot, "express"));
-
-  app.listen(PORT, async () => {
+  app.listen({ port: PORT, host: "0.0.0.0" }, async (err) => {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
     await bot.api.setWebhook(WEBHOOK_URL + "/bot");
     console.log(`[${new Date().toISOString()}] Bot started (webhook on :${PORT})`);
   });
