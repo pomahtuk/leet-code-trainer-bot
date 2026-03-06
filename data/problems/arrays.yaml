@@ -1,0 +1,161 @@
+- id: 1
+  leetcode_id: 121
+  title: "Best Time to Buy and Sell Stock"
+  difficulty: easy
+  companies: [amazon, google, meta]
+  topics: [array, greedy]
+  statement: >
+    Given an array prices where prices[i] is the price of a given stock on the
+    ith day, return the maximum profit you can achieve from one transaction
+    (buy one and sell one share). If no profit is possible, return 0.
+  quiz:
+    - question: "What algorithm pattern best solves this?"
+      options:
+        - "Sliding window"
+        - "Track min so far, compute max profit at each step"
+        - "Two pointers from both ends"
+        - "Sort and pick extremes"
+      correct: 1
+      hint: "Think about tracking the minimum price seen so far as you scan left to right."
+    - question: "What is the optimal time complexity?"
+      options:
+        - "O(n log n)"
+        - "O(n^2)"
+        - "O(n)"
+        - "O(n * k)"
+      correct: 2
+      hint: "You only need a single pass through the array."
+  solution:
+    explanation: >
+      Track minimum price seen so far. At each step, calculate profit if selling
+      today. Keep global max profit.
+    pseudocode: |
+      minPrice = infinity
+      maxProfit = 0
+      for price in prices:
+        minPrice = min(minPrice, price)
+        maxProfit = max(maxProfit, price - minPrice)
+      return maxProfit
+    java: |
+      public int maxProfit(int[] prices) {
+          int min = Integer.MAX_VALUE, profit = 0;
+          for (int p : prices) {
+              min = Math.min(min, p);
+              profit = Math.max(profit, p - min);
+          }
+          return profit;
+      }
+
+- id: 2
+  leetcode_id: 1
+  title: "Two Sum"
+  difficulty: easy
+  companies: [amazon, google, meta, apple]
+  topics: [array, hash_table]
+  statement: >
+    Given an array of integers nums and an integer target, return indices of the
+    two numbers such that they add up to target. Each input has exactly one
+    solution, and you may not use the same element twice.
+  quiz:
+    - question: "What is the most efficient approach?"
+      options:
+        - "Sort then binary search for complement"
+        - "Brute force all pairs"
+        - "Hash map: store seen values, check for complement"
+        - "Two pointers on sorted array"
+      correct: 2
+      hint: "For each number, you need to quickly check if (target - num) was seen before."
+    - question: "Why can't we use two pointers directly?"
+      options:
+        - "Two pointers would be O(n^2)"
+        - "We need original indices, sorting loses them"
+        - "Two pointers only works on linked lists"
+        - "The array might have negative numbers"
+      correct: 1
+      hint: "Think about what sorting does to the index information."
+  solution:
+    explanation: >
+      Use a hash map to store each number's index. For each element, check if
+      (target - current) exists in the map.
+    pseudocode: |
+      map = {}
+      for i, num in enumerate(nums):
+        complement = target - num
+        if complement in map:
+          return [map[complement], i]
+        map[num] = i
+    java: |
+      public int[] twoSum(int[] nums, int target) {
+          Map<Integer, Integer> map = new HashMap<>();
+          for (int i = 0; i < nums.length; i++) {
+              int comp = target - nums[i];
+              if (map.containsKey(comp))
+                  return new int[]{map.get(comp), i};
+              map.put(nums[i], i);
+          }
+          return new int[]{};
+      }
+
+- id: 3
+  leetcode_id: 15
+  title: "3Sum"
+  difficulty: medium
+  companies: [amazon, google, meta, microsoft]
+  topics: [array, two_pointers, sorting]
+  statement: >
+    Given an integer array nums, return all triplets [nums[i], nums[j], nums[k]]
+    such that i != j, i != k, j != k, and nums[i] + nums[j] + nums[k] == 0.
+    The solution set must not contain duplicate triplets.
+  quiz:
+    - question: "What is the standard approach?"
+      options:
+        - "Three nested loops"
+        - "Hash map for all pairs"
+        - "Sort, then fix one element and use two pointers"
+        - "Divide and conquer"
+      correct: 2
+      hint: "Sorting helps with both the two-pointer technique and duplicate skipping."
+    - question: "How do you avoid duplicate triplets?"
+      options:
+        - "Use a HashSet of results"
+        - "Skip consecutive equal elements while iterating"
+        - "Only consider elements at prime indices"
+        - "Check if result already exists before adding"
+      correct: 1
+      hint: "After sorting, equal elements are adjacent. You can skip them."
+  solution:
+    explanation: >
+      Sort the array. For each element, use two pointers on the remaining subarray
+      to find pairs that sum to its negation. Skip duplicates by checking adjacent values.
+    pseudocode: |
+      sort(nums)
+      result = []
+      for i in 0..n-2:
+        if i > 0 and nums[i] == nums[i-1]: skip
+        lo, hi = i+1, n-1
+        while lo < hi:
+          sum = nums[i] + nums[lo] + nums[hi]
+          if sum == 0: add triplet, skip dupes, lo++, hi--
+          elif sum < 0: lo++
+          else: hi--
+      return result
+    java: |
+      public List<List<Integer>> threeSum(int[] nums) {
+          Arrays.sort(nums);
+          List<List<Integer>> res = new ArrayList<>();
+          for (int i = 0; i < nums.length - 2; i++) {
+              if (i > 0 && nums[i] == nums[i-1]) continue;
+              int lo = i + 1, hi = nums.length - 1;
+              while (lo < hi) {
+                  int sum = nums[i] + nums[lo] + nums[hi];
+                  if (sum == 0) {
+                      res.add(List.of(nums[i], nums[lo], nums[hi]));
+                      while (lo < hi && nums[lo] == nums[lo+1]) lo++;
+                      while (lo < hi && nums[hi] == nums[hi-1]) hi--;
+                      lo++; hi--;
+                  } else if (sum < 0) lo++;
+                  else hi--;
+              }
+          }
+          return res;
+      }

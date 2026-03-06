@@ -1,0 +1,17 @@
+generator:
+  model: "gemini-3.1-flash-lite-preview"
+  provider: "google"
+  temperature: 0.7
+
+judge:
+  model: "gemini-2.5-pro"
+  provider: "google"
+  temperature: 0.3
+
+regenerate:
+  flagged_only: false
+  max_retries: 2
+
+output:
+  problems_dir: "data/problems"
+  flagged_dir: "data/flagged"

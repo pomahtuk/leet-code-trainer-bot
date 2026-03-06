@@ -1,0 +1,53 @@
+- id: 4
+  leetcode_id: 238
+  title: Product of Array Except Self
+  difficulty: medium
+  companies:
+    - meta
+    - amazon
+    - google
+    - microsoft
+  topics:
+    - array
+    - prefix_sum
+  statement: >
+    Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements
+    of nums except nums[i]. The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer. You
+    must write an algorithm that runs in O(n) time and without using the division operation.
+  quiz:
+    - question: Which approach solves this problem in O(n) time without division?
+      options:
+        - Two-pass prefix and suffix product arrays
+        - Nested loops to calculate products for each index
+        - Sorting the array first
+        - Using a hash map to store element frequencies
+      correct: 0
+      hint: Consider calculating products of all elements to the left and all elements to the right separately.
+    - question: What is the optimal space complexity for this problem, excluding the output array?
+      options:
+        - O(n^2)
+        - O(n)
+        - O(log n)
+        - O(1)
+      correct: 3
+      hint: The output array doesn't count towards space complexity; can you compute the suffix product on the fly?
+  solution:
+    explanation: >
+      Calculate prefix products in one pass, then multiply by suffix products in a second pass. This avoids division and
+      uses constant extra space by reusing the result array.
+    pseudocode: |
+      res = array of size n, filled with 1
+      prefix = 1
+      for i in 0..n-1: res[i] = prefix; prefix *= nums[i]
+      suffix = 1
+      for i in n-1..0: res[i] *= suffix; suffix *= nums[i]
+    java: |
+      int[] res = new int[nums.length];
+      res[0] = 1;
+      for (int i = 1; i < nums.length; i++) res[i] = res[i - 1] * nums[i - 1];
+      int suffix = 1;
+      for (int i = nums.length - 1; i >= 0; i--) {
+          res[i] *= suffix;
+          suffix *= nums[i];
+      }
+      return res;

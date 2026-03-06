@@ -1,0 +1,27 @@
+{
+  "name": "leetcode-training-bot",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/bot/index.ts",
+    "start": "node dist/src/bot/index.js",
+    "build": "tsc",
+    "generate": "tsx scripts/generate.ts",
+    "fetch-problems": "tsx scripts/fetch-problems.ts",
+    "fetch-company-tags": "tsx scripts/fetch-company-tags.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "@google/genai": "^1.44.0",
+    "@supabase/supabase-js": "^2.47.0",
+    "dotenv": "^16.4.0",
+    "grammy": "^1.30.0",
+    "openai": "^6.27.0",
+    "yaml": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
