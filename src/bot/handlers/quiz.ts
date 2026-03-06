@@ -6,6 +6,7 @@ import {
   recordAttempt,
   updateStatsOnCorrect,
   updateStatsOnIncorrect,
+  updateStatsOnProblemComplete,
   getOrCreateStats,
 } from "../../db/queries.js";
 import { getProblemById } from "../../problems/loader.js";
@@ -56,6 +57,7 @@ export function registerCallbacks(bot: Bot<Context>) {
       } else {
         // All questions answered — show solution
         await deleteSession(telegramId);
+        await updateStatsOnProblemComplete(telegramId);
         await sendSolution(ctx, problem);
 
         const stats = await getOrCreateStats(telegramId);

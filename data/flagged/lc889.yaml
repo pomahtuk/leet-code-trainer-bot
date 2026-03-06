@@ -1,0 +1,64 @@
+id: 889
+leetcode_id: 889
+title: Construct Binary Tree from Preorder and Postorder Traversal
+difficulty: medium
+companies:
+  - amazon
+  - bloomberg
+  - google
+  - meta
+  - microsoft
+topics:
+  - array
+  - hash-table
+  - divide-and-conquer
+  - tree
+  - binary-tree
+statement: >
+  Given two integer arrays, preorder and postorder, reconstruct and return the binary tree. If there exist multiple
+  answers, you can return any of them.
+quiz:
+  - question: Which strategy is used to identify the boundaries of the left and right subtrees?
+    options:
+      - Identify the root of the left subtree using preorder[1] and find its index in postorder
+      - Split both arrays exactly in the middle
+      - Use the last element of preorder as the root of the left subtree
+      - Sort both arrays and use binary search
+    correct: 0
+    hint: The second element in preorder is the root of the left subtree.
+  - question: What is the time complexity of the reconstruction if a HashMap is used for index lookups?
+    options:
+      - O(N)
+      - O(N log N)
+      - O(N^2)
+      - O(1)
+    correct: 0
+    hint: Each node is processed exactly once.
+solution:
+  explanation: >
+    The first element of preorder is the root. The second element is the root of the left subtree. By finding this left
+    root in the postorder array, we determine the size of the left subtree, allowing us to split the arrays and recurse.
+  pseudocode: |
+    map = index map of postorder
+    function build(preStart, preEnd, postStart, postEnd):
+      if preStart > preEnd return null
+      root = Node(preorder[preStart])
+      if preStart == preEnd return root
+      leftRootVal = preorder[preStart + 1]
+      idx = map[leftRootVal]
+      len = idx - postStart + 1
+      root.left = build(preStart+1, preStart+len, postStart, idx)
+      root.right = build(preStart+len+1, preEnd, idx+1, postEnd-1)
+      return root
+  java: |
+    int preIdx = 0, postIdx = 0;
+    public TreeNode constructFromPrePost(int[] preorder, int[] postorder) {
+        TreeNode root = new TreeNode(preorder[preIdx++]);
+        if (root.val != postorder[postIdx])
+            root.left = constructFromPrePost(preorder, postorder);
+        if (root.val != postorder[postIdx])
+            root.right = constructFromPrePost(preorder, postorder);
+        postIdx++;
+        return root;
+    }
+_flag_reason: Java code implements a different algorithm than the one in the explanation and pseudocode

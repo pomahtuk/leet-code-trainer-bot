@@ -110,6 +110,18 @@ export async function getOrCreateStats(telegramId: number) {
 
 export async function updateStatsOnCorrect(telegramId: number) {
   const stats = await getOrCreateStats(telegramId);
+
+  await supabase
+    .from("lc_user_stats")
+    .update({
+      total_correct: stats.total_correct + 1,
+      total_attempts: stats.total_attempts + 1,
+    })
+    .eq("telegram_id", telegramId);
+}
+
+export async function updateStatsOnProblemComplete(telegramId: number) {
+  const stats = await getOrCreateStats(telegramId);
   const today = new Date().toISOString().split("T")[0];
   const lastActive = stats.last_active;
 
@@ -117,16 +129,17 @@ export async function updateStatsOnCorrect(telegramId: number) {
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split("T")[0];
 
-  const streakContinues = lastActive === yesterdayStr || lastActive === today;
-  const newStreak = streakContinues ? stats.current_streak + 1 : 1;
+  let newStreak = stats.current_streak;
+  if (lastActive !== today) {
+    // First problem completed today — bump streak
+    newStreak = lastActive === yesterdayStr ? stats.current_streak + 1 : 1;
+  }
 
   await supabase
     .from("lc_user_stats")
     .update({
       current_streak: newStreak,
       longest_streak: Math.max(newStreak, stats.longest_streak),
-      total_correct: stats.total_correct + 1,
-      total_attempts: stats.total_attempts + 1,
       xp: stats.xp + 10,
       last_active: today,
     })

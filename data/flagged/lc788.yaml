@@ -1,0 +1,73 @@
+id: rotated-digits
+leetcode_id: 788
+title: Rotated Digits
+difficulty: medium
+companies:
+  - amazon
+  - arista-networks
+  - google
+  - meta
+  - microsoft
+  - uber
+topics:
+  - math
+  - dynamic-programming
+statement: >
+  An integer x is good if after rotating each digit individually by 180 degrees, we get a valid number that is different
+  from x. Each digit must be rotated. A number is valid if each digit remains a digit after rotation: 0, 1, 8 rotate to
+  themselves; 2 and 5 rotate to each other; 6 and 9 rotate to each other. Other digits (3, 4, 7) become invalid. Given
+  n, return the count of good integers in [1, n].
+quiz:
+  - question: Which condition must be met for a number to be considered 'good'?
+    options:
+      - It contains only 0, 1, 2, 5, 6, 8, 9 and at least one of 2, 5, 6, 9.
+      - It contains only 2, 5, 6, 9 and no 0, 1, 8.
+      - It contains any digits except 3, 4, 7.
+      - It contains at least one 0, 1, or 8 and no 2, 5, 6, 9.
+    correct: 0
+    hint: A good number must be valid after rotation AND different from its original form.
+  - question: What is the time complexity of a brute-force approach that checks every number up to n?
+    options:
+      - O(n log n)
+      - O(n)
+      - O(log n)
+      - O(n^2)
+    correct: 0
+    hint: We iterate from 1 to n, and for each number, we inspect its digits.
+solution:
+  explanation: >
+    A number is 'good' if it contains only digits from {0, 1, 8, 2, 5, 6, 9} and includes at least one digit from {2, 5,
+    6, 9}. Digits {3, 4, 7} make the number invalid.
+  pseudocode: |
+    count = 0
+    for i from 1 to n:
+      if isValid(i): count++
+    return count
+
+    isValid(num):
+      hasDiff = false
+      while num > 0:
+        digit = num % 10
+        if digit in {3, 4, 7}: return false
+        if digit in {2, 5, 6, 9}: hasDiff = true
+        num /= 10
+      return hasDiff
+  java: |
+    public int rotatedDigits(int n) {
+        int count = 0;
+        for (int i = 1; i <= n; i++) {
+            if (check(i)) count++;
+        }
+        return count;
+    }
+    private boolean check(int num) {
+        boolean diff = false;
+        while (num > 0) {
+            int d = num % 10;
+            if (d == 3 || d == 4 || d == 7) return false;
+            if (d == 2 || d == 5 || d == 6 || d == 9) diff = true;
+            num /= 10;
+        }
+        return diff;
+    }
+_flag_reason: solution is not optimal, solution does not match dynamic-programming topic
