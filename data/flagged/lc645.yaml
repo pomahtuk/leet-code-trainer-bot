@@ -1,0 +1,60 @@
+id: set-mismatch
+leetcode_id: 645
+title: Set Mismatch
+difficulty: easy
+companies:
+  - amazon
+  - bloomberg
+  - github
+  - google
+  - meta
+  - microsoft
+topics:
+  - array
+  - hash-table
+  - bit-manipulation
+  - sorting
+statement: >
+  You are given an integer array nums representing a set that originally contained all numbers from 1 to n. Due to an
+  error, one number is duplicated and another is missing. Find and return the duplicate and the missing number.
+quiz:
+  - question: Which approach achieves O(n) time and O(1) space complexity?
+    options:
+      - Using the array indices as a hash map by negating values
+      - Sorting the array and checking adjacent elements
+      - Using a boolean array of size n+1
+      - Using a HashMap to store frequencies
+    correct: 0
+    hint: Think about marking visited elements in-place by flipping signs.
+  - question: If the sum of 1..n is S, and the actual sum of the array is A, what does A - S represent?
+    options:
+      - duplicate - missing
+      - missing - duplicate
+      - duplicate + missing
+      - The duplicate number
+    correct: 0
+    hint: Actual sum includes the duplicate and excludes the missing value.
+solution:
+  explanation: >
+    We can iterate through the array and use each value as an index. By negating the value at that index, we mark it as
+    seen; if we encounter a value that points to an already negative number, that's the duplicate. A second pass finds
+    the index that remains positive, which indicates the missing number.
+  pseudocode: |
+    for n in nums:
+      if nums[abs(n)-1] < 0: dup = abs(n)
+      else: nums[abs(n)-1] *= -1
+    for i from 0 to n-1:
+      if nums[i] > 0: missing = i + 1
+    return [dup, missing]
+  java: |
+    public int[] findErrorNums(int[] nums) {
+        int dup = -1, missing = 1;
+        for (int n : nums) {
+            if (nums[Math.abs(n) - 1] < 0) dup = Math.abs(n);
+            else nums[Math.abs(n) - 1] *= -1;
+        }
+        for (int i = 0; i < nums.length; i++)
+            if (nums[i] > 0 && i + 1 != dup) missing = i + 1;
+        return new int[]{dup, missing};
+    }
+_flag_reason: Java code has a redundant/confusing condition in the second loop

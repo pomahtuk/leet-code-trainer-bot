@@ -1,0 +1,57 @@
+id: exchange-seats
+leetcode_id: 626
+title: Exchange Seats
+difficulty: medium
+companies:
+  - amazon
+  - bloomberg
+  - capgemini
+  - coindcx
+  - google
+  - meesho
+  - meta
+  - microsoft
+  - zomato
+topics:
+  - database
+statement: >
+  Table: Seat (id int, student varchar). id is the primary key. Write a solution to swap the seat id of every two
+  consecutive students. If the number of students is odd, the id of the last student is not swapped. Return the result
+  table ordered by id in ascending order.
+quiz:
+  - question: Which SQL conditional logic correctly handles the ID swapping for all cases?
+    options:
+      - If id is odd and not last, id+1; if even, id-1; if odd and last, stay same.
+      - If id is even, id+1; if id is odd, id-1.
+      - Use a JOIN to swap student names where a.id = b.id + 1.
+      - Use the LAG function to move every student name down by one index.
+    correct: 0
+    hint: Consider how to identify the last row in an odd-numbered set using a subquery.
+  - question: What is the result of applying (id ^ 1) logic to a 1-indexed ID sequence?
+    options:
+      - It swaps 1 with 0, and 2 with 3, which requires adjusting for 1-based indexing.
+      - It correctly swaps 1 with 2 and 3 with 4 automatically.
+      - It reverses the entire list of students.
+      - It only works if the total number of rows is even.
+    correct: 0
+    hint: Bitwise XOR with 1 flips the last bit, but 1-based IDs start at 0001 (1) and 0010 (2).
+solution:
+  explanation: >
+    The logic uses a CASE statement to transform IDs: odd IDs are incremented by 1, and even IDs are decremented by 1. A
+    special check using a subquery is required to ensure the last ID remains unchanged if the total count is odd.
+  pseudocode: |
+    SELECT (CASE 
+      WHEN id % 2 != 0 AND id = (SELECT COUNT(*) FROM Seat) THEN id
+      WHEN id % 2 != 0 THEN id + 1
+      ELSE id - 1
+    END) AS id, student
+    FROM Seat ORDER BY id;
+  java: |
+    public void exchangeSeats(List<Seat> seats) {
+        for (int i = 0; i < seats.size() - 1; i += 2) {
+            String temp = seats.get(i).student;
+            seats.get(i).student = seats.get(i + 1).student;
+            seats.get(i + 1).student = temp;
+        }
+    }
+_flag_reason: Java solution is inconsistent with the problem statement and SQL solution

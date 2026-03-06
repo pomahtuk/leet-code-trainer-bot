@@ -53,14 +53,14 @@ if (WEBHOOK_URL) {
     return res.text();
   });
 
-  app.listen({ port: PORT, host: "0.0.0.0" }, async (err) => {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
+  try {
+    await app.listen({ port: PORT, host: "0.0.0.0" });
     await bot.api.setWebhook(WEBHOOK_URL + "/bot");
     console.log(`[${new Date().toISOString()}] Bot started (webhook on :${PORT})`);
-  });
+  } catch (err) {
+    console.error("Failed to start:", err);
+    process.exit(1);
+  }
 } else {
   // Dev: polling mode
   bot.start();
